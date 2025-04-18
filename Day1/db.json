@@ -1,0 +1,34 @@
+{
+  "posts": [
+    {
+        "id":1,
+        "name":"shirt",
+        "image":"https://atlance.in/cdn/shop/files/FD-DSC00393.jpg?v=1744115735",
+        "cost":400,
+        "discount":0.1
+    }, {
+        "id":2,
+        "name":"pant",
+        "image":"https://m.media-amazon.com/images/I/61kjvN8OtvL._SY741_.jpg",
+        "cost":200,
+        "discount":0.3
+
+    },
+    {
+        "id":3,
+        "name":"watch",
+        "image":"https://www.casio.com/content/dam/casio/product-info/locales/in/en/timepiece/product/watch/M/MT/MTP/mtp-1302pd-3av/assets/MTP-1302PD-3AV.png.transform/main-visual-sp/image.png",
+        "cost":300,
+        "discount":0.09
+
+    }, 
+    {
+        "id":4,
+        "name":"shoes",
+        "image":"https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQLGipHWHlOmM0iwUs2tegZRXOjAjYNikrcMB91e_REpiJCUbI8FbyHX81zoI2AexaBrjO_lapPOHAaJwVYz1va8R2DZ7pLXKVGZQ86lr63AbjRCvyQg3N_Uw",
+        "cost":700,
+        "discount":0.15
+
+    }
+]
+}

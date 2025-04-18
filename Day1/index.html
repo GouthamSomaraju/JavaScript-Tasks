@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="./online-shopping.png" type="image/x-icon">
+    <title>Products</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+      }
+
+      #main {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        width: 250px;
+        border: 2px solid #21f380;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.2s;
+      }
+
+      .card:hover {
+        transform: scale(1.03);
+      }
+      .card img {
+        width: 100%;
+        height: 180px;
+        object-fit: contain;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .card h1 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .card h2 {
+        font-size: 18px;
+        color: #666;
+        margin-bottom: 10px;
+      }
+
+      .card span {
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+        color: #666;
+        margin-bottom: 12px;
+      }
+
+      .card button {
+        padding: 10px 15px;
+        font-size: 14px;
+        font-weight: bold;
+        background-color: #ff6600;
+        color: black;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .card button:hover {
+        background-color: #f59a11;
+      }
+
+      #topBar {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      #topBar button {
+        padding: 10px 25px;
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #21f356;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      #topBar button:hover {
+        background-color: #59f580;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="topBar">
+      <button onclick="cartBtn()">CART</button>
+    </div>
+
+    <div id="main"></div>
+
+    <script>
+      async function products() {
+        let emp = [];
+        let result = await fetch("http://localhost:3000/posts");
+        let data = await result.json();
+
+        data.map((val) => {
+          let main = document.getElementById("main");
+          let card = document.createElement("div");
+          let image = document.createElement("img");
+          let h1 = document.createElement("h1");
+          let h2 = document.createElement("h2");
+          let dis = document.createElement("span");
+          let btn = document.createElement("button");
+
+          card.className = "card";
+
+          image.src = val.image;
+          h1.innerHTML = val.name;
+          h2.innerHTML = "Price: ₹" + val.cost;
+          dis.innerHTML = `Discount: ${val.discount * 100}%`;
+          btn.innerHTML = "Add to Cart";
+
+          btn.addEventListener("click", function () {
+            emp.push(val);
+            sessionStorage.setItem("data", JSON.stringify(emp));
+          });
+
+          card.append(image, h1, h2, dis, btn);
+          main.appendChild(card);
+        });
+      }
+
+      products();
+
+      function cartBtn() {
+        window.open("index2.html", "_self");
+      }
+    </script>
+  </body>
+</html>
