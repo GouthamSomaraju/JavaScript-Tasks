@@ -24,6 +24,7 @@ async function products() {
       btn.addEventListener("click", function () {
         emp.push(val);
         sessionStorage.setItem("data", JSON.stringify(emp));
+        alert("Added To Cart")
       });
 
       card.append(image, h1, h2, dis, btn);
