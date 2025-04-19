@@ -1,0 +1,21 @@
+Day 2 Task
+🧠 Task: Secret Number Game
+Objective:
+Write a JavaScript program where:
+• The player gets 3 chances to guess a secret number.
+• Use if/else for feedback (conditional statements).
+• Use a closure to protect the secret number.
+• Demonstrate hoisting and the temporal dead zone (TDZ).
+• Use different types of functions (normal, arrow, IIFE).
+• Use a for loop to manage attempts.
+SAMPLE OUTPUT :
+Welcome to the Secret Number Game!
+Attempt 1: Guess the secret number (1-10)
+> User enters: 4
+Too low!
+Attempt 2: Guess the secret number (1-10)
+> User enters: 9
+Too high!
+Attempt 3: Guess the secret number (1-10)
+> User enters: 7
+Correct!
