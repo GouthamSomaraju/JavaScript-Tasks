@@ -1,4 +1,4 @@
-# JS task - Day1
+# JS task - Day2
 
 # User Profile Manager (Web-based Interactive Task)
 
