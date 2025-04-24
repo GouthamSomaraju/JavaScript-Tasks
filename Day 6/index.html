@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>weather App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="main">
+        <input type="text" id="search" placeholder="Enter Your City" />
+        <button id="searchBtn">Search</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+      let input = document.getElementById("search");
+      let button = document.getElementById("searchBtn");
+      let result = document.getElementById("result");
+
+      button.addEventListener("click", function () {
+        let city = input.value.trim();
+        result.innerHTML = "";
+        input.value = ""; 
+
+        if (city.length == 0) {
+          alert("⚠️ You must enter a city name!");
+          return;
+        }
+        try {
+          fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=4df193dad162784c4db21b9fb5a9dc53`
+          )
+            .then((res) => {
+              if (!res.ok) {
+                throw new Error("City not found or Bad Request");
+              }
+              return res.json();
+            })
+            .then((data) => {
+              let temperature = data?.main?.temp;
+              let description = data?.weather[0]?.description;
+
+              if (!temperature || !description) {
+                throw new Error("Data not found");
+              }
+
+              result.innerHTML = `<h1>${city}</h1>
+                                  <h2>🌡 Temperature: ${temperature}°C</h2>
+                                  <h3>🌥 Description: ${description}</h3>`;
+            })
+            .catch((err) => {
+              console.log("Fetch Error:", err.message);
+              result.innerHTML = `<h1>${city}</h1>
+                                    <h2>City not found</h2>`;
+            });
+        } catch (error) {
+          console.error("Error:", error.message);
+        }
+      });
+    </script>
+  </body>
+</html>
