@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Search & Logger System</title>
+    <style>
+      #results {
+        display: flex;
+        flex-direction: column;
+        /* justify-content: center; */
+        align-items: center;
+        /* border: 1px solid black; */
+        width: 300px;
+        height: 300px;
+      }
+      #resultsContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        /* align-items: center; */
+        width: 100%;
+        height: 100%;
+      }
+      #resultsContainer h2 {
+        margin: 0;
+      }
+      #debounce {
+        border: 1px solid red;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      #throttle {
+        border: 1px solid blue;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      h3 {
+        margin: 0;
+      }
+      input {
+        width: 200px;
+        height: 30px;
+        margin-bottom: 10px;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id="search" placeholder="Search here..." />
+    <div id="results">
+      <h2>Results</h2>
+      <div id="resultsContainer">
+        <div id="debounce">
+          <h2>Debounce</h2>
+        </div>
+        <div id="throttle">
+          <h2>Throttle</h2>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function debounce(fun, delay) {
+        let timer;
+        return function (...args) {
+          clearTimeout(timer);
+          timer = setTimeout(() => fun(...args), delay);
+        };
+      }
+
+      let debounceFunc = debounce(() => {
+        console.log("Debounce function called after 500ms delay");
+        let res = document.querySelector("#debounce");
+        let h1 = document.createElement("h3");
+        h1.innerText = search.value;
+        res.append(h1);
+      }, 100);
+
+      let search = document.querySelector("#search");
+      search.addEventListener("keyup", () => {
+        debounceFunc();
+      });
+
+      function throttle(fun, delay) {
+        let last;
+        return function (...args) {
+          let now = new Date().getTime();
+          if (now - last < delay) {
+            return;
+          }
+          last = now;
+          return fun(...args);
+        };
+      }
+
+      let res = document.querySelector("#results");
+      let throttleFunc = throttle(() => {
+        let res = document.querySelector("#throttle");
+        let h1 = document.createElement("h3");
+        h1.innerText = search.value;
+        res.append(h1);
+        // console.log(search.value);
+      }, 300);
+
+      search.addEventListener("keyup", () => {
+        throttleFunc();
+      });
+    </script>
+  </body>
+</html>

@@ -5,87 +5,145 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mini User Tracker App</title>
   <style>
-    body { font-family: sans-serif; padding: 2rem; }
-    #reset { margin-top: 1rem; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #333;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: red;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      color: black;
+      background-color: rgb(228, 14, 14);
+    }
+
+    @media (max-width: 600px) {
+      h2 {
+        font-size: 1.4rem;
+      }
+
+      button {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1 id="greeting"></h1>
-  <button id="reset">Reset</button>
+  
   <script>
     // 1. Polyfill for Array.prototype.includes
-if (!Array.prototype.includes) {
-  Array.prototype.includes = function(searchElement, fromIndex = 0) {
-    for (let i = fromIndex; i < this.length; i++) {
-      if (this[i] === searchElement) return true;
+    if (!Array.prototype.includes) {
+      Array.prototype.includes = function(element, indexStart = 0) {
+        return this.indexOf(element, indexStart) !== -1;
+      }
     }
-    return false;
-  };
-}
 
-// 2. Prototypal Inheritance
-function User(name) {
-  this.name = name;
-}
+    // 2. Prototypal Inheritance
+    class User {
+      constructor(name) {
+        this.name = name;
+      }
+    }
 
-function Visitor(name, visitCount) {
-  User.call(this, name);
-  this.visitCount = visitCount;
-}
+    class Visitor extends User {
+      constructor(name, count) {
+        super(name);
+        this.count = count;
+      }
+    }
 
-Visitor.prototype = Object.create(User.prototype);
-Visitor.prototype.constructor = Visitor;
+    // 3. Cookie helpers
+    function setCookie(name, value, days) {
+      let date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      let expires = 'expires=' + date.toUTCString();
+      document.cookie = `${name}=${value}; ${expires}; path=/`;
+    }
 
-// 3. Cookie utilities
-function setCookie(name, value, daysToExpire = 7) {
-  const expires = new Date(Date.now() + daysToExpire * 864e5).toUTCString();
-  document.cookie = `${name}=${value}; expires=${expires}; path=/`;
-}
+    function getCookie(name) {
+      let cName = `${name}=`;
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let cArray = decodedCookie.split(';');
+      for (let c of cArray) {
+        while (c.charAt(0) === ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(cName) === 0) {
+          return c.substring(cName.length, c.length);
+        }
+      }
+      return '';
+    }
 
-function getCookie(name) {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? match[2] : null;
-}
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
 
-function deleteCookie(name) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-}
+    // 4. Suffix helper
+    function getSuffix(n) {
+      let j = n % 10, k = n % 100;
+      if (j === 1 && k !== 11) return n + "st";
+      if (j === 2 && k !== 12) return n + "nd";
+      if (j === 3 && k !== 13) return n + "rd";
+      return n + "th";
+    }
 
-// 4. Suffix function for ordinal numbers
-function getOrdinalSuffix(n) {
-  const s = ["th", "st", "nd", "rd"],
-    v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
+    // 5. App logic
+    function setupApp() {
+      let userName = localStorage.getItem('userName');
+      if (!userName) {
+        userName = prompt('Enter your name:');
+        if (userName) {
+          localStorage.setItem('userName', userName);
+        }
+      }
 
-// 5. Main App Logic
-function runApp() {
-  let name = localStorage.getItem('username');
-  if (!name) {
-    name = prompt("Enter your name:");
-    if (name) localStorage.setItem('username', name);
-  }
+      let visitCount = parseInt(getCookie('visitCount') || 0, 10) + 1;
+      setCookie('visitCount', visitCount, 7); // 7-day cookie
 
-  if (name) {
-    let visitCount = parseInt(getCookie('visitCount') || '0', 10);
-    visitCount += 1;
-    setCookie('visitCount', visitCount);
+      let visitor = new Visitor(userName, visitCount);
 
-    const visitor = new Visitor(name, visitCount);
-    document.getElementById('greeting').textContent = `Hello ${visitor.name}, this is your ${getOrdinalSuffix(visitor.visitCount)} visit!`;
-  }
-}
+      // Greeting
+      let message = document.createElement('h2');
+      message.textContent = `Hello ${visitor.name}, this is your ${getSuffix(visitor.count)} visit!`;
+      document.body.appendChild(message);
 
-// 6. Reset Button
-document.getElementById('reset').addEventListener('click', () => {
-  localStorage.removeItem('username');
-  deleteCookie('visitCount');
-  location.reload();
-});
+      // Reset button
+      let resetBtn = document.createElement('button');
+      resetBtn.innerText = 'Reset';
+      resetBtn.onclick = function () {
+        localStorage.removeItem('userName');
+        deleteCookie('visitCount');
+        location.reload();
+      };
+      document.body.appendChild(resetBtn);
+    }
 
-// Run the app on load
-runApp();
-
+    window.onload = setupApp;
   </script>
 </body>
 </html>
